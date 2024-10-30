@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIMI THE CAT</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background:url(bg.jpeg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      width: 450px;
+    }
+
+    .cat {
+      width: 150px;
+      height: 150px;
+      transition: transform 1s ease;
+    }
+
+    .options {
+      margin-top: 20px;
+    }
+
+    .options button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      color: white;
+    }
+
+   
+    button{
+      background-color: palevioletred;
+    }
+
+    .selection-list {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .selection-list img {
+      width: 60px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    .selection-list img:hover {
+      transform: scale(1.2);
+    }
+
+    .food, .drinks, .toys {
+      display: none;
+    }
+
+    .action-feedback {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+a{
+  text-decoration: none;
+  color: white;
+}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>MIMI The Cat!</h2>
+    <img id="cat" class="cat" src="cat.jpeg" alt="Cat">
+    
+    <!-- Option Buttons -->
+    <div class="options">
+      <button class="eat-btn" onclick="showSelection('food')">Eat</button>
+      <button class="drink-btn" onclick="showSelection('drinks')">Drink</button>
+      <button class="play-btn" onclick="showSelection('toys')">Play</button>
+      <button class="sleep-btn" onclick="catSleep()">Sleep</button>
+      <button class="chat-btn"><a href="talking.html">chat</a></button>
+    </div>
+    
+    <!-- Selection Lists -->
+    <div class="selection-list" id="selection-list">
+      <div class="food">
+        <img src="fish.jpeg" alt="Fish" onclick="feedCat('Fish')">
+        <img src="icecream.png" alt="icecream" onclick="feedCat('icecream')">
+        <img src="treats.jpeg" alt="treats" onclick="feedCat('treats')">
+      </div>
+      <div class="drinks">
+        <img src="water.jpeg" alt="water" onclick="giveDrink('Water')">
+        <img src="juice.jpeg" alt="Juice" onclick="giveDrink('Juice')">
+        <img src="milk.png" alt="Milk" onclick="giveDrink('Milk')">
+      </div>
+      <div class="toys">
+        <img src="ball.jpeg" alt="Ball" onclick="playWithToy('Ball')">
+        <img src="yarn.jpeg" alt="Yarn" onclick="playWithToy('Yarn')">
+        <img src="mouse.jpeg" alt="Mouse Toy" onclick="playWithToy('Mouse')">
+       <a href="quiz.html"><img src="quiz.png" alt="Quiz" ></a> 
+      </div>
+    </div>
+
+    <!-- Feedback Text -->
+    <div id="feedback" class="action-feedback"></div>
+  </div>
+
+  <script>
+    function showSelection(type) {
+      // Hide all lists and reset cat image
+      document.querySelectorAll('.selection-list div').forEach(el => el.style.display = 'none');
+      document.getElementById("selection-list").style.display = 'block';
+      
+      // Show specific list based on type
+      document.querySelector(`.${type}`).style.display = 'block';
+      resetCat();
+    }
+
+    function feedCat(food) {
+      const feedback = document.getElementById("feedback");
+      const cat = document.getElementById("cat");
+      
+      feedback.textContent = `Your cat is eating ${food}!`;
+      cat.src = `eat${food}.jpeg`;
+      animateCat();
+      hideSelection();
+    }
+    // hello
+
+    function giveDrink(drink) {
+      const feedback = document.getElementById("feedback");
+      const cat = document.getElementById("cat");
+      
+      feedback.textContent = `Your cat is drinking ${drink}!`;
+      cat.src = `drink${drink}.jpeg`;
+      animateCat();
+      hideSelection();
+    }
+
+    function playWithToy(toy) {
+      const feedback = document.getElementById("feedback");
+      const cat = document.getElementById("cat");
+      
+      feedback.textContent = `Your cat is playing with the ${toy}!`;
+      cat.src = `play${toy}.jpeg`; 
+      animateCat();
+      hideSelection();
+    }
+
+    function catSleep() {
+      const feedback = document.getElementById("feedback");
+      const cat = document.getElementById("cat");
+      
+      feedback.textContent = "Your cat is sleeping...";
+      cat.src = "sleep.jpeg"; 
+      animateCat();
+      hideSelection();
+    }
+
+    function hideSelection() {
+      document.getElementById("selection-list").style.display = 'none';
+    }
+
+    function resetCat() {
+      const cat = document.getElementById("cat");
+      cat.src = "cat.jpeg"; // Reset to standing cat
+      document.getElementById("feedback").textContent = ""; // Clear feedback
+    }
+
+    function animateCat() {
+      const cat = document.getElementById("cat");
+      cat.style.transform = "scale(1.2)";
+      setTimeout(() => {
+        cat.style.transform = "scale(1)";
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>

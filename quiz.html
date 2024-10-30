@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIMI THE CAT</title>
+   <script src="config.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+     
+            background-color: rgb(244 233 227);
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .img-head{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 15px;
+        }
+        .img-head img{
+border-radius: 50%;
+width: 150px;
+}
+        h1 {
+            color: rgb(219 112 147);
+        }
+        .lists{
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+        }
+        .difficulty{
+          width: 100%;
+        }
+        .category-list, .difficulty-list, .option-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .category-list li, .difficulty-list li, .option-list li {
+            padding: 12px;
+            margin: 8px 0;
+            background-color: rgb(219 112 147);
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            width: 20%;
+        }
+        .category-list li:hover, .difficulty-list li:hover, .option-list li:hover {
+            background-color: rgb(219 112 147);
+        }
+        .q-box, .msg, .next-button {
+            margin-top: 20px;
+        }
+        .msg {
+            font-size: 1.2em;
+        }
+        .next-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgb(219 112 147);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .next-button:hover {
+            background-color: rgb(219 112 147);
+        }
+        .hidden {
+            display: none;
+        }
+       .container2{
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+a{
+  text-decoration: none;
+  color: white;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+      <div class="img-head">
+      <img src="cat.jpeg" alt="">
+        <h1>Quiz Game</h1>
+        </div>
+        <div class="lists">
+          <div class="category">
+        <h2>Select a Category</h2>
+        <ul class="category-list">
+            <li data-id="9">General Knowledge</li>
+            <li data-id="18">Science: Computers</li>
+            <li data-id="21">Sports</li>
+            <li data-id="24">Politics</li>
+            <li data-id="27">Animals</li>
+            <li data-id="23">History</li>
+            <li data-id="17">Science & Nature</li>
+            <li data-id="22">Geography</li>
+        </ul>
+        </div>
+        <div class="difficulty">
+
+          <h2>Select Difficulty</h2>
+          <ul class="difficulty-list">
+            <li data-difficulty="easy">Easy</li>
+            <li data-difficulty="medium">Medium</li>
+            <li data-difficulty="hard">Hard</li>
+          </ul>
+        </div>
+</div>
+        <div class="q-box hidden">
+            <h3 class="ques">
+              <div class="load">.......</div>
+            </h3>
+            <ul class="option-list"></ul>
+            <div class="msg"></div>
+        </div>
+
+        <button class="next-button hidden">Next Question</button>
+    </div>
+
+    <script>
+  
+
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
+      let selectedCategory = null;
+      let selectedDifficulty = null;
+let  score=0;
+      const categories = document.querySelectorAll('.category-list li');
+      const difficulties = document.querySelectorAll('.difficulty-list li');
+      const questionBox = document.querySelector('.q-box');
+      const questionElement = document.querySelector('.ques');
+      const optionList = document.querySelector('.option-list');
+      const messageElement = document.querySelector('.msg');
+      const nextButton = document.querySelector('.next-button');
+const list =document.querySelector('.lists');
+const cate=document.querySelector('.category');
+const diff=document.querySelector('.difficulty')
+let num=1;
+
+
+      // Add event listener to each category
+      categories.forEach(category => {
+        category.addEventListener('click', () => {
+          selectedCategory = category.getAttribute('data-id');
+   
+      hideUnselected(category, '.category-list li');
+      cate.style.width="45%";
+      
+        });
+      });
+   
+
+      // Add event listener to each difficulty
+      difficulties.forEach(difficulty => {
+        difficulty.addEventListener('click', () => {
+          selectedDifficulty = difficulty.getAttribute('data-difficulty');
+
+      
+           hideUnselected(difficulty, '.difficulty-list li');
+           diff.style.width="50%"
+        
+
+             fetchQuestion();
+          
+         
+           
+          });
+        });
+       
+          
+      // Function to fetch a question
+      function fetchQuestion() {
+        if (selectedCategory && selectedDifficulty) {
+          fetch(`https://Open-Trivia-API.proxy-production.allthingsdev.co/api.php?amount=1&category=${selectedCategory}&difficulty=${selectedDifficulty}`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+              displayQuestion(data.results[0]);
+              nextButton.classList.remove('hidden'); // Show the "Next Question" button
+            })
+            .catch(error => console.error("Error:", error));
+        } else {
+          messageElement.innerHTML = '<span style="color: red;">Please select both a category and difficulty level.</span>';
+        }
+        num++;
+      }
+
+      // Function to display a question and options
+      function displayQuestion(questionData) {
+        // Show question box
+        questionBox.classList.remove('hidden');
+        messageElement.innerHTML = '';  // Clear previous messages
+
+        // Display the question
+        questionElement.innerHTML = questionData.question;
+
+        // Display options (shuffle correct and incorrect answers)
+        const options = [...questionData.incorrect_answers, questionData.correct_answer]; 
+        shuffle(options);
+        optionList.innerHTML = '';  // Clear previous options
+
+        options.forEach(option => {
+          const li = document.createElement('li');
+          li.textContent = option;
+          li.addEventListener('click', () => checkAnswer(option, questionData.correct_answer));
+          optionList.appendChild(li);
+        });
+      }
+
+      // Function to check the selected answer
+      function checkAnswer(selectedAnswer, correctAnswer) {
+        if (selectedAnswer === correctAnswer) {
+          
+          messageElement.innerHTML = '<span style="color: green;">Correct!</span>';
+          score++;
+        } else {
+          messageElement.innerHTML = `<span style="color: red;">Wrong! The correct answer was: ${correctAnswer}</span>`;
+        }
+      }
+
+      // Utility function to shuffle options
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+
+      // Event listener for the "Next Question" button
+      nextButton.addEventListener('click', () => {
+        if(num<=10){
+        fetchQuestion();}
+        else{
+          viewscore();
+        }
+      });
+
+      
+function hideUnselected(selectedElement, selector) {
+  document.querySelectorAll(selector).forEach(el => {
+    if (el !== selectedElement) {
+      el.style.display = 'none'; // Hide other elements
+    }
+  });
+  selectedElement.style.width = '100%'; // Expand the selected element to full width
+}
+function viewscore(){
+  
+  let container=document.querySelector('.container')
+questionBox.style.display='none'
+list.style.display='none'
+   container2=document.createElement('div')
+   container2.classList.add('container2')
+   let text=document.createElement('p')
+   
+  if(score > 5){
+    text.textContent=`your score is ${score} out of 10 well done!`
+   text.style.color='green'
+  }else{
+  text.textContent=`your score is ${score} out of 10 better luck next time!`
+        text.style.color='red'
+  }
+  container.appendChild(container2)
+  container2.appendChild(text)
+  
+  let exit=document.createElement('button')
+  exit.classList.add('next-button')
+  
+  exit.innerHTML='<a href=index.html>exit</a>'
+  container2.appendChild(exit)
+     nextButton.classList.add('hidden')
+
+}
+
+
+    </script>
+</body>
+</html>

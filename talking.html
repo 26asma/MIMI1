@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mimi The Cat</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(45deg, #f3ec78, #af4261);
+      margin: 0;
+    }
+
+    .chat-container {
+      width: 400px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chat-box {
+      background-color: #eef;
+      border-radius: 15px;
+      padding: 10px;
+      height: 350px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-start;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 15px;
+      max-width: 85%;
+    }
+
+    .user-message {
+      background-color: #d1ffd1;
+      align-self: flex-end;
+      border-radius: 15px 15px 0 15px;
+    }
+
+    .angela-message {
+      background-color: #f0f0f0;
+      border-radius: 15px 15px 15px 0;
+    }
+
+    .user-input {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      width: 75%;
+      outline: none;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .cat-img {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+    }
+
+    .text {
+      background-color: #f0f0f0;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-box" id="chat-box">
+      <!-- Chat messages will appear here -->
+      <div class="message angela-message">
+        <img src="cat.jpeg" alt="Angela" class="cat-img">
+        <div class="text">Hi, I'm Mimi! How can I help you today?</div>
+      </div>
+    </div>
+    <div class="user-input">
+      <input type="text" id="user-text" placeholder="Type your message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const userInput = document.getElementById("user-text").value;
+      if (userInput.trim() === "") return;
+
+      const chatBox = document.getElementById("chat-box");
+
+      // Append user's message
+      const userMessage = document.createElement("div");
+      userMessage.classList.add("message", "user-message");
+      userMessage.textContent = userInput;
+      chatBox.appendChild(userMessage);
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Angela's response
+      const angelaMessage = document.createElement("div");
+      angelaMessage.classList.add("message", "angela-message");
+
+      const catImg = document.createElement("img");
+      catImg.src = "cat.jpeg"; // Small cat image
+      catImg.classList.add("cat-img");
+
+      const angelaText = document.createElement("div");
+      angelaText.classList.add("text");
+
+      const userMessageLower = userInput.toLowerCase();
+      if ((userMessageLower.includes("hello"))||(userMessageLower.includes("hi")) ){
+        angelaText.textContent = "Hello! iam here to talk to you..How are you today?";
+      } else if (userMessageLower.includes("how are you")) {
+        angelaText.textContent = "I'm great! What about you? hope you are fine too!";
+      } else if (userMessageLower.includes("fine")) {
+        angelaText.textContent = "iam really happy to hear this <3!";
+      }else if (userMessageLower.includes("bye")) {
+        angelaText.textContent = "Goodbye! loved talking to you hope we'll talk  soon! meoww";
+      }
+      else if (userMessageLower.includes("what are you doing")) {
+        angelaText.textContent = "nothing much...waiting for my owner to feed me my yummy treats! i'm kind of starving  you know i love eating?...meowww";
+      }
+      else if (userMessageLower.includes("iam kinda bored")) {
+        angelaText.textContent = "how about you feed me instead? i would really love that or you could keep talking eh?";
+      }
+      else {
+        angelaText.textContent = " i dont get it sorry, iam still working on it..";
+      }
+
+      angelaMessage.appendChild(catImg);
+      angelaMessage.appendChild(angelaText);
+
+      setTimeout(() => {
+        chatBox.appendChild(angelaMessage);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1000);
+
+      document.getElementById("user-text").value = "";
+    }
+  </script>
+</body>
+</html>
